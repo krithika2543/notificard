@@ -1,24 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import Punchline from './Punchline';
+
+const URL = 'https://official-joke-api.appspot.com/random_joke';
 
 function App() {
+  const [jokes, setJokes] = useState([]);
+  const [jokePunches, setJokePunches] = useState([]);
+
+  useEffect(() => {
+    const fetchJoke = async () => {
+      try {
+        const response = await fetch(URL);
+        const joke = await response.json();
+        setJokes(prevJokes => [...prevJokes, joke.setup]);
+        setJokePunches(prevJokePunches => [...prevJokePunches, joke.punchline]);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    const interval = setInterval(fetchJoke, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div>
+        {jokes.map((joke, index) => (
+          <div key={index}>
+            <Link to={`/punchline/${index}`}>
+              <h2>{joke}</h2>
+            </Link>
+            <Route path={`/punchline/:index`}>
+              <Punchline punchline={jokePunches[index]} />
+            </Route>
+          </div>
+        ))}
+      </div>
+    </Router>
   );
 }
 
