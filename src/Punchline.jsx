@@ -1,6 +1,6 @@
 import React from "react";
 
-function Punchline({punchline}) {
+function Punchline({ punchline }) {
   return (
     <div>{punchline}</div>
   )

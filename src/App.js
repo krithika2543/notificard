@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Link } from 'react-router-dom';
 import Punchline from './Punchline';
 
 const URL = 'https://official-joke-api.appspot.com/random_joke';
@@ -25,21 +25,24 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <div>
-        {jokes.map((joke, index) => (
-          <div key={index}>
-            <Link to={`/punchline/${index}`}>
-              <h2>{joke}</h2>
-            </Link>
-            <Route path={`/punchline/:index`}>
-              <Punchline punchline={jokePunches[index]} />
-            </Route>
-          </div>
-        ))}
+      <BrowserRouter>
+       <div>
+        <nav>
+          {jokes.map((joke, index) => (
+            <div key={index}>
+              <Link to={`/punchline/${index}`}>
+                <h2>{joke}</h2>
+              </Link>
+            </div>
+          ))}
+        </nav>
       </div>
-    </Router>
-  );
+      <Route path="/punchline/:index">
+        <Punchline punchline={jokePunches} />
+      </Route>
+      </BrowserRouter>
+    );
+
 }
 
 export default App;
